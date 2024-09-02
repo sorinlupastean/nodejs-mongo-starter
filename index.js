@@ -1,9 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const User = require("./models/User");
 
 const app = express();
-mongoose.connect("mongodb://localhost:27017/local");
+app.use(express.json());
+
+mongoose.connect("mongodb://127.0.0.1:27017/local");
+
+app.post("/users", async (req, res) => {
+  try {
+    const user = new User(req.body);
+    await user.save();
+    res.status(201).send(user);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
 
 app.listen(3001, () => {
-  console.log("Server is running");
+  console.log("Server is running on port 3001");
 });
