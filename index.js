@@ -9,6 +9,11 @@ mongoose.connect("mongodb://127.0.0.1:27017/local");
 
 app.post("/users", async (req, res) => {
   try {
+    const existingUser = await User.findOne({ email: req.body.email });
+    if (existingUser) {
+      return res.status(400).send({ error: "Email already in use" });
+    }
+
     const user = new User(req.body);
     await user.save();
     res.status(201).send(user);
